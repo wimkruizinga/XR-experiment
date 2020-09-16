@@ -14,9 +14,9 @@ function init() {
     console.log("add lights");
     // Add some lights
     const light = new THREE.HemisphereLight(0xffffff, 0xbbbbff, 1);
-    light.position.set( 0, 1, 0 );
+    light.position.set( 0, 10, 0 );
     scene.add( light );
-    scene.add(new THREE.AmbientLight(0xffffff, 0.5))
+    scene.add(new THREE.Fog(0xffffff, 0.5))
 
     console.log("add text");
     const text_loader = new TTFLoader();
@@ -90,6 +90,9 @@ function init() {
     console.log("animate!")
     animate();
     console.log("animating?")
+
+   console.log("add picture");
+   addImage();
 }
 
 function animate() {
@@ -110,6 +113,8 @@ function render(time) {
         console.log("adding a cube")
         addCube();
     }
+
+
 }
 
 init();
@@ -132,10 +137,38 @@ function addCube() {
 
     let cube = new THREE.Mesh(
         new THREE.BoxBufferGeometry(1,1,1),
-        new THREE.MeshLambertMaterial({color:'blue'})
+        new THREE.MeshPhysicalMaterial({color:'blue'})
     );
     let randomX = (Math.random() * 30) - 15;
     cube.position.set(randomX, 1.5, -15);
     scene.add(cube);
     arObjects.push(cube);
+}
+
+function addImage() {
+    // instantiate a loader
+    var loader = new THREE.ImageBitmapLoader();
+
+    // set options if needed
+    loader.setOptions( { imageOrientation: 'flipY' } );
+
+    // load a image resource
+    loader.load(
+        // resource URL
+        'vincent.jpg',
+
+        // onLoad callback
+        function ( imageBitmap ) {
+            var texture = new THREE.CanvasTexture( imageBitmap );
+            var material = new THREE.MeshBasicMaterial( { map: texture } );
+        },
+
+        // onProgress callback currently not supported
+        undefined,
+
+        // onError callback
+        function ( err ) {
+            console.log( 'An error happened' );
+        }
+    );
 }
